@@ -230,8 +230,7 @@ public final class ShutdownThread extends Thread {
                 sConfirmDialog.dismiss();
                 sConfirmDialog = null;
             }
-
-            AlertDialog.Builder confirmDialogBuilder = new AlertDialog.Builder(uiContext)
+            AlertDialog.Builder confirmDialogBuilder = new AlertDialog.Builder(uiContext, com.android.internal.R.style.Theme_Material_DayNight_Dialog_Alert)
                     .setTitle(mRebootSafeMode
                             ? com.android.internal.R.string.reboot_safemode_title
                             : showRebootOption
