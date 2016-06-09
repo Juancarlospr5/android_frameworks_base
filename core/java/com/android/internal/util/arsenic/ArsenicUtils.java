@@ -24,11 +24,7 @@ import java.util.Locale;
 
 public class ArsenicUtils {
 
-    public static boolean isChineseLanguage() {
-       return Resources.getSystem().getConfiguration().locale.getLanguage().startsWith(
-               Locale.CHINESE.getLanguage());
-    }
-
+    
     public static boolean isWifiOnly(Context context) {
         ConnectivityManager cm = (ConnectivityManager)context.getSystemService(
                 Context.CONNECTIVITY_SERVICE);

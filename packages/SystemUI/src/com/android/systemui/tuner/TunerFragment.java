@@ -19,6 +19,7 @@ import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.content.ContentResolver;
 import android.database.ContentObserver;
 import android.net.Uri;
 import android.os.Bundle;
@@ -28,6 +29,7 @@ import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceGroup;
+import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
 import android.provider.Settings;
 import android.provider.Settings.System;
@@ -36,6 +38,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.android.internal.logging.MetricsLogger;
+import com.android.internal.util.arsenic.ArsenicUtils;
 import com.android.systemui.R;
 import com.android.systemui.statusbar.phone.StatusBarIconController;
 import com.android.systemui.tuner.TunerService.Tunable;
@@ -43,6 +46,10 @@ import com.android.systemui.tuner.TunerService.Tunable;
 public class TunerFragment extends PreferenceFragment {
 
     private static final String TAG = "TunerFragment";
+
+    private static final String SHOW_FOURG = "show_fourg";
+
+    private SwitchPreference mShowFourG;
 
     private static final String KEY_STATUSBAR_BLACKLIST = "statusbar_icon_blacklist";
     private static final String KEY_DEMO_MODE = "demo_mode";
@@ -55,8 +62,20 @@ public class TunerFragment extends PreferenceFragment {
         super.onCreate(savedInstanceState);
 
         addPreferencesFromResource(R.xml.tuner_prefs);
+        PreferenceScreen prefSet = getPreferenceScreen();
+
+        final ContentResolver resolver = getActivity().getContentResolver();
+
         getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
         setHasOptionsMenu(true);
+
+        mShowFourG = (SwitchPreference) findPreference(SHOW_FOURG);
+        if (ArsenicUtils.isWifiOnly(getActivity())) {
+            prefSet.removePreference(mShowFourG);
+        } else {
+        mShowFourG.setChecked((Settings.System.getInt(resolver,
+                Settings.System.SHOW_FOURG, 0) == 1));
+        }
 
         findPreference(KEY_STATUSBAR_BLACKLIST).setOnPreferenceClickListener(new OnPreferenceClickListener() {
             @Override
@@ -157,5 +176,16 @@ public class TunerFragment extends PreferenceFragment {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
+        if  (preference == mShowFourG) {
+            boolean checked = ((SwitchPreference)preference).isChecked();
+            Settings.System.putInt(getActivity().getContentResolver(),
+                    Settings.System.SHOW_FOURG, checked ? 1:0);
+            return true;
+        }
+        return super.onPreferenceTreeClick(preferenceScreen, preference);
     }
 }
