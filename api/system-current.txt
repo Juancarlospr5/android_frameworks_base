@@ -28722,6 +28722,7 @@ package android.provider {
     field public static final java.lang.String BLUETOOTH_DISCOVERABILITY_TIMEOUT = "bluetooth_discoverability_timeout";
     field public static final deprecated java.lang.String BLUETOOTH_ON = "bluetooth_on";
     field public static final android.net.Uri CONTENT_URI;
+    field public static final java.lang.String CUSTOM_CARRIER_LABEL = "custom_carrier_label";
     field public static final deprecated java.lang.String DATA_ROAMING = "data_roaming";
     field public static final java.lang.String DATE_FORMAT = "date_format";
     field public static final deprecated java.lang.String DEBUG_APP = "debug_app";
