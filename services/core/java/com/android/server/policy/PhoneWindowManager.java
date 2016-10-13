@@ -7077,69 +7077,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             final int currentAppPos, final int totalAppCount) {
         mHandler.post(new Runnable() {
             @Override public void run() {
-                if (mBootMsgDialog == null) {
-                    int theme;
-                    if (mContext.getPackageManager().hasSystemFeature(
-                            PackageManager.FEATURE_WATCH)) {
-                        theme = com.android.internal.R.style.Theme_Micro_Dialog_Alert;
-                    } else if (mContext.getPackageManager().hasSystemFeature(
-                            PackageManager.FEATURE_TELEVISION)) {
-                        theme = com.android.internal.R.style.Theme_Leanback_Dialog_Alert;
-                    } else {
-                        theme = 5;
-                    }
-
-                    mBootMsgDialog = new ProgressDialog(mContext, theme) {
-                        // This dialog will consume all events coming in to
-                        // it, to avoid it trying to do things too early in boot.
-                        @Override public boolean dispatchKeyEvent(KeyEvent event) {
-                            return true;
-                        }
-                        @Override public boolean dispatchKeyShortcutEvent(KeyEvent event) {
-                            return true;
-                        }
-                        @Override public boolean dispatchTouchEvent(MotionEvent ev) {
-                            return true;
-                        }
-                        @Override public boolean dispatchTrackballEvent(MotionEvent ev) {
-                            return true;
-                        }
-                        @Override public boolean dispatchGenericMotionEvent(MotionEvent ev) {
-                            return true;
-                        }
-                        @Override public boolean dispatchPopulateAccessibilityEvent(
-                                AccessibilityEvent event) {
-                            return true;
-                        }
-                    };
-                    if (mContext.getPackageManager().isUpgrade()) {
-                        mBootMsgDialog.setTitle(R.string.android_upgrading_title);
-                    } else {
-                        mBootMsgDialog.setTitle(R.string.android_start_title);
-                    }
-                    mBootMsgDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                    mBootMsgDialog.setIndeterminate(true);
-                    mBootMsgDialog.getWindow().setType(
-                            WindowManager.LayoutParams.TYPE_BOOT_PROGRESS);
-                    mBootMsgDialog.getWindow().addFlags(
-                            WindowManager.LayoutParams.FLAG_DIM_BEHIND
-                            | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
-                    mBootMsgDialog.getWindow().setDimAmount(1);
-                    WindowManager.LayoutParams lp = mBootMsgDialog.getWindow().getAttributes();
-                    lp.screenOrientation = ActivityInfo.SCREEN_ORIENTATION_NOSENSOR;
-                    mBootMsgDialog.getWindow().setAttributes(lp);
-                    mBootMsgDialog.setCancelable(false);
-                    mBootMsgDialog.show();
-                }
-
-                if (always && (currentPackageName != null)) {
-                    // Only display the current package name if the main message says "Optimizing app N of M".
-                    // We don't want to do this when the message says "Starting apps" or "Finishing boot", etc.
-                    mBootMsgDialog.setMessage(msg + "\n" + currentPackageName);
-                }
-                else {
-                    mBootMsgDialog.setMessage(msg);
->>>>>>> 55fbf62... DayNight: Dialogs and Power Menu Fixes
+		if (mBootMsgDialog == null) {
+                    mBootMsgDialog = BootDexoptDialog.create(mContext);
                 }
                 mBootMsgDialog.setProgress(stage, optimizedApp, currentAppPos, totalAppCount);
             }

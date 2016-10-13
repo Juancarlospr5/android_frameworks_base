@@ -237,27 +237,13 @@ public final class ShutdownThread extends Thread {
                                     ? com.android.internal.R.string.reboot_title
                                     : com.android.internal.R.string.power_off);
 
-            if (mReboot && !mRebootSafeMode) {
-                // Determine if primary user is logged in
-                boolean isPrimary = UserHandle.getCallingUserId() == UserHandle.USER_OWNER;
-
-                // See if the advanced reboot menu is enabled
-                // (only if primary user) and check the keyguard state
-                int advancedReboot = isPrimary ? getAdvancedReboot(context) : 0;
-                KeyguardManager km = (KeyguardManager) context.getSystemService(
-                        Context.KEYGUARD_SERVICE);
-                boolean locked = km.inKeyguardRestrictedInputMode() && km.isKeyguardSecure();
-
-                if ((advancedReboot == 1 && !locked) || advancedReboot == 2) {
-                    // Include options in power menu for rebooting into recovery or bootloader
-                    sConfirmDialog = new AlertDialog.Builder(context, com.android.internal.R.style.Theme_Material_DayNight_Dialog_Alert)
-                            .setTitle(titleResourceId)
-                            .setItems(
-                                    com.android.internal.R.array.shutdown_reboot_options,
-                                    new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    if (which < 0)
-                                        return;
+            if (!advancedReboot || mRebootSafeMode) {
+                confirmDialogBuilder.setMessage(resourceId);
+            } else {
+                confirmDialogBuilder
+                      .setSingleChoiceItems(com.android.internal.R.array.shutdown_reboot_options,
+                              0, null);
+            }
 
             confirmDialogBuilder.setPositiveButton(com.android.internal.R.string.yes,
                     new DialogInterface.OnClickListener() {
