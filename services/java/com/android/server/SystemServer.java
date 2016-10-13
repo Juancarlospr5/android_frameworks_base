@@ -330,7 +330,8 @@ public final class SystemServer {
     private void createSystemContext() {
         ActivityThread activityThread = ActivityThread.systemMain();
         mSystemContext = activityThread.getSystemContext();
-        mSystemContext.setTheme(com.android.internal.R.style.Theme_Power_Dialog);
+
+        mSystemContext.setTheme(com.android.internal.R.style.Theme_Material_DayNight_DarkActionBar);
     }
 
     /**
